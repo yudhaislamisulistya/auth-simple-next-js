@@ -4,6 +4,14 @@ import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+export async function getServerSideProps(context){
+  const session = await getSession(context);
+  return{
+    props: {
+      session: session
+    }
+  }
+}
 
 async function createUser(email, password) {
   const response = await fetch('/api/auth/signup', {
@@ -24,12 +32,11 @@ async function createUser(email, password) {
 }
 
 
-export default function Home() {
+export default function Home({session}) {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  const {data: session, status} = useSession();
+  const {status} = useSession();
   const [isLoading, setIsLoading] = useState();
-  console.log(session);
   console.log(status);
 
   const [isLogin, setIsLogin] = useState(true);
@@ -38,8 +45,6 @@ export default function Home() {
   function logoutHandler(){
     signOut()
   }
-
-
 
 
   function switchAuthModeHandler() {
@@ -70,7 +75,7 @@ export default function Home() {
       if(result.error == 'invalid_password') toast.error('Invalid Password.')
 
       if (!result.error) {
-        router.replace('/');
+        router.push('/');
       }
     } else {
       try {
