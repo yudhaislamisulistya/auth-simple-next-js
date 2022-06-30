@@ -1,155 +1,45 @@
-import { useSession, signIn, signOut, getSession } from "next-auth/react"
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useRef, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { getToken } from "next-auth/jwt"
+import { signOut } from "next-auth/react"
+import Link from "next/link"
+import { useRouter } from "next/router"
 
-export async function getServerSideProps(context){
-  const session = await getSession(context);
-  return{
+export async function getServerSideProps(context) {
+  const session = await getToken({req: context.req, secret: process.env.NEXTAUTH_SECRET})
+  return {
     props: {
       session: session
     }
   }
 }
 
-async function createUser(email, password) {
-  const response = await fetch('/api/auth/signup', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export default function Index({session}){
+  const router = useRouter()
+  async function logoutHandler(){
+      await signOut({redirect: false, callbackUrl: '/'})
+      router.replace('/')
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong!');
   }
-
-  return data;
+    return (
+    <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header className="masthead mb-auto">
+        <div className="inner">
+          <h3 className="masthead-brand">Cover</h3>
+          <nav className="nav nav-masthead justify-content-center">
+            <a className="nav-link" href="#">Home</a>
+            <a className="nav-link" href="#">Features</a>
+            <a className="nav-link" href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+    
+      <main role="main" className="inner cover">
+        <h1 className="cover-heading">Selamat Datang yah {session != null ? session.nama : "Tamu"}.</h1>
+        <p className="lead">Learning Auth with Next Auth + MongoDB.</p>
+        <p className="lead">
+          {session == null ?<Link href={'/login'}><a className="btn btn-lg btn-secondary">Login</a></Link> : <button className="btn btn-lg btn-danger" onClick={logoutHandler}>Logout</button>}
+        </p>
+      </main>
+    </div>
+  )
 }
 
-
-export default function Home({session}) {
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
-  const {status} = useSession();
-  const [isLoading, setIsLoading] = useState();
-  console.log(status);
-
-  const [isLogin, setIsLogin] = useState(true);
-  const router = useRouter();
-
-  function logoutHandler(){
-    signOut()
-  }
-
-
-  function switchAuthModeHandler() {
-    setIsLogin((prevState) => !prevState);
-  }
-
-  async function submitHandler(event) {
-    event.preventDefault();
-
-    const enteredEmail = emailInputRef.current.value;
-    const enteredPassword = passwordInputRef.current.value;
-
-    // optional: Add validation
-
-    if (isLogin) {
-
-      toast.loading('Loading...');
-      setIsLoading(true)
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: enteredEmail,
-        password: enteredPassword,
-      });
-      toast.remove()
-      setIsLoading(false)
-
-      if(result.error == 'no_user_found') toast.error('User Not Found.')
-      if(result.error == 'invalid_password') toast.error('Invalid Password.')
-
-      if (!result.error) {
-        router.replace('/');
-      }
-    } else {
-      try {
-        const result = await createUser(enteredEmail, enteredPassword);
-        console.log(result);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
-
-  return (
-    <section className="">
-      <header className="">
-      <Link href='/'>
-        <a>
-          <div className="">Next Auth</div>
-          <div>Status Anda adalah {session != null ? session.user.role : "Tamu"}</div>
-        </a>
-      </Link>
-      <nav>
-        <ul>
-          {!session ? (
-            <li>
-              <Link href='/auth'>Login</Link>
-            </li>
-          ) : null}
-          {session ? (
-            <li>
-              <Link href='/profile'>Profile</Link>
-            </li>
-          ): null}
-          {session ? (
-            <li>
-              <button onClick={logoutHandler}>Logout</button>
-            </li>
-          ): null}
-        </ul>
-      </nav>
-    </header>
-      <Toaster/>
-      <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
-      {!session && (
-              <form onSubmit={submitHandler}>
-              <div className="">
-                <label htmlFor='email'>Your Email</label>
-                <input type='email' id='email' required ref={emailInputRef} />
-              </div>
-              <div className="">
-                <label htmlFor='password'>Your Password</label>
-                <input
-                  type='password'
-                  id='password'
-                  required
-                  ref={passwordInputRef}
-                />
-              </div>
-              <div className="">
-                <button
-                  disabled={isLoading ? true : false}
-                  >
-                    {isLogin ? 'Login' : 'Create Account'}
-                </button>
-                <button
-                  disabled={isLoading ? true : false}
-                  type='button'
-                  className=""
-                  onClick={switchAuthModeHandler}
-                >
-                  {isLogin ? 'Create new account' : 'Login with existing account'}
-                </button>
-              </div>
-            </form>
-      )}
-    </section>
-  );
-}
