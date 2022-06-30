@@ -1,5 +1,6 @@
 import { getToken } from "next-auth/jwt"
 import { signIn } from "next-auth/react"
+import Link from "next/link"
 import {  useRouter } from "next/router"
 import { useRef, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
@@ -67,6 +68,9 @@ export default function Login(){
                     <input className="form-control" ref={passwordInputRef} type="password"  required/>
                 </div>
                 {isLoading ? <button className="btn btn-primary" disabled>Loading...</button> : <button className="btn btn-primary">Login</button>}
+                <Link href={'/register'}>
+                    <a className="btn btn-link">Register</a>
+                </Link>
             </form>
         </div>
     )

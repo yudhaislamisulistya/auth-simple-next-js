@@ -1,4 +1,5 @@
 import { getToken } from "next-auth/jwt";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -20,23 +21,23 @@ export async function getServerSideProps(ctx) {
     }
 }
 
-export default function register({session}){
-    const emailInputRef = useRef()
-    const usernameInputRef = useRef()
-    const nameInputRef = useRef()
-    const nohpInputRef = useRef()
-    const passwordInputRef = useRef()
-    const [isLoading, setIsLoading] = useState(false)
+export default function Register(){
+    const EmailInputRef = useRef()
+    const UsernameInputRef = useRef()
+    const NameInputRef = useRef()
+    const NohpInputRef = useRef()
+    const PasswordInputRef = useRef()
+    const [isLoading, setIsLoading] = useState()
     const router = useRouter()
 
     async function submitHandler(event) {
         event.preventDefault()
         
-        const emailValue = emailInputRef.current.value
-        const usernameValue = usernameInputRef.current.value
-        const nameValue = nameInputRef.current.value
-        const nohpValue = nohpInputRef.current.value
-        const passwordValue = passwordInputRef.current.value
+        const emailValue = EmailInputRef.current.value
+        const usernameValue = UsernameInputRef.current.value
+        const nameValue = NameInputRef.current.value
+        const nohpValue = NohpInputRef.current.value
+        const passwordValue = PasswordInputRef.current.value
         setIsLoading(true)
         const payload = {
             email: emailValue,
@@ -73,21 +74,24 @@ export default function register({session}){
             <h1>Login</h1>
             <form onSubmit={submitHandler}>
                 <div className="form-group mb-3">
-                    <input className="form-control" ref={emailInputRef} type="email" placeholder="Your Email" required/>
+                    <input className="form-control" ref={EmailInputRef} type="email" placeholder="Your Email" required/>
                 </div>
                 <div className="form-group mb-3">
-                    <input className="form-control" ref={usernameInputRef} type="text" placeholder="Your Username" required/>
+                    <input className="form-control" ref={UsernameInputRef} type="text" placeholder="Your Username" required/>
                 </div>
                 <div className="form-group mb-3">
-                    <input className="form-control" ref={nameInputRef} type="text" placeholder="Your Name" required/>
+                    <input className="form-control" ref={NameInputRef} type="text" placeholder="Your Name" required/>
                 </div>
                 <div className="form-group mb-3">
-                    <input className="form-control" ref={nohpInputRef} type="text" placeholder="Your Nohp" required/>
+                    <input className="form-control" ref={NohpInputRef} type="text" placeholder="Your Nohp" required/>
                 </div>
                 <div className="form-group mb-3">
-                    <input className="form-control" ref={passwordInputRef} type="password" placeholder="Your Password"  required/>
+                    <input className="form-control" ref={PasswordInputRef} type="password" placeholder="Your Password"  required/>
                 </div>
                 {isLoading ? <button className="btn btn-primary" disabled>Loading...</button> : <button className="btn btn-primary">Register</button>}
+                <Link href={'/login'}>
+                    <a className="btn btn-link">Login</a>
+                </Link>
             </form>
         </div>
     )
