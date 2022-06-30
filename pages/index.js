@@ -75,7 +75,7 @@ export default function Home({session}) {
       if(result.error == 'invalid_password') toast.error('Invalid Password.')
 
       if (!result.error) {
-        router.push('/');
+        router.replace('/');
       }
     } else {
       try {
