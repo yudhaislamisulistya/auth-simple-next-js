@@ -33,7 +33,7 @@ export default function Index({session}){
       </header>
     
       <main role="main" className="inner cover">
-        <h1 className="cover-heading">Selamat Datang yah {session != null ? session.nama : "Tamu"}.</h1>
+        <h1 className="cover-heading">Selamat Datang yah {session != null ? session.name : "Tamu"}.</h1>
         <p className="lead">Learning Auth with Next Auth + MongoDB.</p>
         <p className="lead">
           {session == null ?<Link href={'/login'}><a className="btn btn-lg btn-secondary">Login</a></Link> : <button className="btn btn-lg btn-danger" onClick={logoutHandler}>Logout</button>}
