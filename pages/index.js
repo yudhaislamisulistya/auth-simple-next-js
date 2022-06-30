@@ -1,8 +1,9 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut, getSession } from "next-auth/react"
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+
 
 async function createUser(email, password) {
   const response = await fetch('/api/auth/signup', {
@@ -87,6 +88,7 @@ export default function Home() {
       <Link href='/'>
         <a>
           <div className="">Next Auth</div>
+          <div>Status Anda adalah {session != null ? session.user.role : "Tamu"}</div>
         </a>
       </Link>
       <nav>
@@ -111,36 +113,38 @@ export default function Home() {
     </header>
       <Toaster/>
       <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
-      <form onSubmit={submitHandler}>
-        <div className="">
-          <label htmlFor='email'>Your Email</label>
-          <input type='email' id='email' required ref={emailInputRef} />
-        </div>
-        <div className="">
-          <label htmlFor='password'>Your Password</label>
-          <input
-            type='password'
-            id='password'
-            required
-            ref={passwordInputRef}
-          />
-        </div>
-        <div className="">
-          <button
-            disabled={isLoading ? true : false}
-            >
-              {isLogin ? 'Login' : 'Create Account'}
-          </button>
-          <button
-            disabled={isLoading ? true : false}
-            type='button'
-            className=""
-            onClick={switchAuthModeHandler}
-          >
-            {isLogin ? 'Create new account' : 'Login with existing account'}
-          </button>
-        </div>
-      </form>
+      {!session && (
+              <form onSubmit={submitHandler}>
+              <div className="">
+                <label htmlFor='email'>Your Email</label>
+                <input type='email' id='email' required ref={emailInputRef} />
+              </div>
+              <div className="">
+                <label htmlFor='password'>Your Password</label>
+                <input
+                  type='password'
+                  id='password'
+                  required
+                  ref={passwordInputRef}
+                />
+              </div>
+              <div className="">
+                <button
+                  disabled={isLoading ? true : false}
+                  >
+                    {isLogin ? 'Login' : 'Create Account'}
+                </button>
+                <button
+                  disabled={isLoading ? true : false}
+                  type='button'
+                  className=""
+                  onClick={switchAuthModeHandler}
+                >
+                  {isLogin ? 'Create new account' : 'Login with existing account'}
+                </button>
+              </div>
+            </form>
+      )}
     </section>
   );
 }

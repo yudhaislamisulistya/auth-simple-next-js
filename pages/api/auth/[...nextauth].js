@@ -18,7 +18,7 @@ export default NextAuth({
         token.accessToken = account.access_token
       }
 
-      return token
+      return {...token}
     },
 
     async session({ session, token }) { // this token return above jwt()
@@ -26,7 +26,7 @@ export default NextAuth({
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.JWT_SECRET,
   pages: {
     signIn: "/",
   },
