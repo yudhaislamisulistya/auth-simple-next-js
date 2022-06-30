@@ -20,7 +20,10 @@ export default function Index({session}){
       await signOut({redirect: false, callbackUrl: '/'})
       router.replace('/')
       toast.remove()
-
+  }
+  let urlAccess = null
+  if(session != null){
+    urlAccess = session.role == 'admin' ? '/admin' : '/customer'
   }
     return (
     <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
@@ -29,9 +32,12 @@ export default function Index({session}){
         <div className="inner">
           <h3 className="masthead-brand">Cover</h3>
           <nav className="nav nav-masthead justify-content-center">
-            <a className="nav-link" href="#">Home</a>
-            <a className="nav-link" href="#">Features</a>
-            <a className="nav-link" href="#">Contact</a>
+            <Link href={'/'}>
+              <a className="nav-link">Home</a>
+            </Link>
+            {session != null ? <Link href={'/profile'}><a className="nav-link">Profile</a></Link> : null}
+            {session != null ? <Link href={'/' + urlAccess}><a className="nav-link">Access</a></Link> : null}
+
           </nav>
         </div>
       </header>
