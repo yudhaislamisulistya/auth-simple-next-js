@@ -2,6 +2,7 @@ import { getToken } from "next-auth/jwt"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import toast, { Toaster } from "react-hot-toast"
 
 export async function getServerSideProps(context) {
   const session = await getToken({req: context.req, secret: process.env.NEXTAUTH_SECRET})
@@ -15,12 +16,15 @@ export async function getServerSideProps(context) {
 export default function Index({session}){
   const router = useRouter()
   async function logoutHandler(){
+      toast.loading('Prosessing...')
       await signOut({redirect: false, callbackUrl: '/'})
       router.replace('/')
+      toast.remove()
 
   }
     return (
     <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <Toaster/>
       <header className="masthead mb-auto">
         <div className="inner">
           <h3 className="masthead-brand">Cover</h3>

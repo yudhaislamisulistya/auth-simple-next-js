@@ -39,6 +39,7 @@ export default function Register(){
         const nohpValue = NohpInputRef.current.value
         const passwordValue = PasswordInputRef.current.value
         setIsLoading(true)
+        toast.loading('Processing...')
         const payload = {
             email: emailValue,
             username: usernameValue,
@@ -54,7 +55,7 @@ export default function Register(){
             body: JSON.stringify(payload)
         })
         setIsLoading(false)
-
+        toast.remove()
         const data = await res.json()
         if(data.code == 422){
             toast.error(data.status)
