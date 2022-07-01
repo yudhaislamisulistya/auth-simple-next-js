@@ -6,6 +6,6 @@ const nextConfig = {
 module.exports = nextConfig
 
 module.exports = {
-  basePath: '/repositories/auth-simple-next-js',
+  basePath: '/',
   trailingSlash: true
 }
