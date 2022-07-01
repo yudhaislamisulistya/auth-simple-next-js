@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import AccessToken from "../components/access_token";
 
 export async function getServerSideProps(context){
     const session = await getSession({req: context.req})
@@ -14,15 +14,24 @@ export async function getServerSideProps(context){
         };
     }
 
+    const res = await fetch(`https://auth-simple-next-js.vercel.app/api/profile/` + session.user._id)
+
+    const data = await res.json()
+
+
     return {
-        props: { session },
+        props: {
+            session: session,
+            data: data.data
+        },
     };
 }
 
-const Profile = ({session}) =>{
+const Profile = ({session, data}) =>{
     const nohpInputRef = useRef()
     const nameInputRef = useRef()
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter()
 
     async function changeProfileHandler(e){
         e.preventDefault()
@@ -51,6 +60,7 @@ const Profile = ({session}) =>{
 
         if(data.status == "success"){
             toast.success(data.success)
+            router.push('/profile')
         }else if(data.status == "error"){
             toast.error(data.error)
         }
@@ -72,11 +82,11 @@ const Profile = ({session}) =>{
                         </div>
                         <div className="form-group text-left">
                             <label htmlFor="">Nomor Handphone</label>
-                            <input type="text" className="form-control" ref={nohpInputRef} placeholder={session.user.nohp} required aria-describedby="helpId"/>
+                            <input type="text" className="form-control" ref={nohpInputRef} placeholder={data.nohp} required aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
                             <label htmlFor="">Name</label>
-                            <input type="text" className="form-control" ref={nameInputRef} placeholder={session.user.name} aria-describedby="helpId"/>
+                            <input type="text" className="form-control" ref={nameInputRef} placeholder={data.name} aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
                             {!isLoading ? <button className="btn btn-primary">Change</button> : <button disabled className="btn btn-secondary">Loading...</button>}
