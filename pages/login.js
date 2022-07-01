@@ -52,7 +52,7 @@ export default function Login(){
         if(result.error == 'invalid_password') toast.error('Invalid Password.')
 
         if (!result.error) {
-        router.replace('/');
+            router.replace('/');
         }
     }
 

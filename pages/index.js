@@ -18,8 +18,8 @@ export default function Index({session}){
   async function logoutHandler(){
       toast.loading('Prosessing...')
       await signOut({redirect: false, callbackUrl: '/'})
-      router.replace('/')
       toast.remove()
+      router.replace('/')
   }
   let urlAccess = null
   if(session != null){
