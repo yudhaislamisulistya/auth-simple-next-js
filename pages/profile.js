@@ -63,19 +63,19 @@ const Profile = ({session}) =>{
                 <div className="col-md-6 m-auto">
                     <form onSubmit={changeProfileHandler}>
                         <div className="form-group text-left">
-                            <label for="">Email</label>
+                            <label htmlFor="">Email</label>
                             <input readOnly type="email" value={session.user.email} className="form-control" aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
-                            <label for="">Username</label>
+                            <label htmlFor="">Username</label>
                             <input readOnly type="text" value={session.user.username} className="form-control" aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
-                            <label for="">Nomor Handphone</label>
+                            <label htmlFor="">Nomor Handphone</label>
                             <input type="text" className="form-control" ref={nohpInputRef} placeholder={session.user.nohp} required aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
-                            <label for="">Name</label>
+                            <label htmlFor="">Name</label>
                             <input type="text" className="form-control" ref={nameInputRef} placeholder={session.user.name} aria-describedby="helpId"/>
                         </div>
                         <div className="form-group text-left">
